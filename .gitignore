@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Flask default log files
+instance/
+*.log
+
+# VSCode/IDE/editor settings
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# MacOS system files
+.DS_Store
+
+# Windows system files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Jupyter Notebook checkpoints (if used)
+.ipynb_checkpoints/
+
+# Uploads (optional if you store resumes in a temp or local folder)
+data/
+uploads/
+resumes/
+
+# Node modules (if any frontend libs used via npm)
+node_modules/
+
+# Environment variable files
+.env
+.env.*
+
+# Cache or dist folders
+*.egg-info/
+dist/
+build/
+*.bak

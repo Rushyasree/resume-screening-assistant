@@ -1,0 +1,9 @@
+Based on the following resume content, classify the candidate into a job category like:
+- Data Science
+- Software Development
+- Human Resources
+- Marketing
+- Finance
+
+Resume Content:
+{resume_text}

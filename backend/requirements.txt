@@ -1,0 +1,6 @@
+flask
+flask-cors
+PyPDF2
+python-dotenv
+requests
+ibm-watsonx-ai
