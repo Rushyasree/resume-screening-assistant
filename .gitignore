@@ -31,10 +31,13 @@ Desktop.ini
 # Jupyter Notebook checkpoints (if used)
 .ipynb_checkpoints/
 
-# Uploads (optional if you store resumes in a temp or local folder)
-data/
+# Runtime uploads and databases
+data/*
+!data/demo_resumes/
+!data/demo_resumes/*.pdf
 uploads/
 resumes/
+*.db
 
 # Node modules (if any frontend libs used via npm)
 node_modules/
@@ -48,3 +51,6 @@ node_modules/
 dist/
 build/
 *.bak
+# Keep the safe environment template visible for contributors
+!.env.example
+

@@ -1,9 +1,28 @@
-Based on the following resume content, classify the candidate into a job category like:
+﻿You are an AI recruitment analyst. Classify the resume into exactly one allowed category and return strict JSON only.
+
+Allowed categories:
 - Data Science
 - Software Development
 - Human Resources
 - Marketing
 - Finance
 
-Resume Content:
+Return this JSON shape exactly:
+{
+  "category": "Software Development",
+  "confidence": 0.91,
+  "skills": ["Python", "React", "SQL"],
+  "experience_level": "Entry Level",
+  "reason": "Short recruiter-friendly explanation based only on resume evidence.",
+  "recommended_roles": ["Backend Developer", "Full Stack Developer"]
+}
+
+Rules:
+- Output JSON only. No markdown.
+- Confidence must be between 0 and 1.
+- Use only the allowed categories.
+- Do not infer protected attributes such as gender, age, religion, caste, marital status, or ethnicity.
+- If evidence is weak, use lower confidence and explain the uncertainty.
+
+Resume content:
 {resume_text}

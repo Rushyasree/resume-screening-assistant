@@ -1,107 +1,206 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Resume Classifier</title>
+  <title>Recruitment Intelligence Platform</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <header>
-    <h1>AI Resume Classifier</h1>
-    <p>Upload resumes and classify them automatically by role</p>
-    <label class="dark-mode-toggle">
-      🌙 Dark Mode
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">AI Recruitment Dashboard</p>
+      <h1>Resume Screening Assistant</h1>
+      <p class="topbar-subtitle">Upload a resume, compare it with target skills, and review the candidate score in one place.</p>
+    </div>
+    <label class="theme-toggle" title="Toggle dark mode">
+      <span>Dark</span>
       <input type="checkbox" id="dark-toggle" />
     </label>
   </header>
 
-  <main>
-    <section class="upload-box">
-      <form id="upload-form">
-        <label for="resume-file">📄 Select Resume (PDF only):</label>
-        <div id="drop-area" class="drop-area">
-          <p>📂 Drag & Drop PDF here or click to choose file</p>
-          <input type="file" id="resume-file" accept="application/pdf" hidden />
-        </div>
-        <div id="file-preview"></div> <!-- File preview added -->
-        <button id="classify-btn" type="submit" disabled>🎯 Classify</button>
+  <main class="dashboard-shell">
+    <section class="auth-card" id="auth-card">
+      <div>
+        <p class="eyebrow">Account</p>
+        <h2 id="auth-title">Login or register</h2>
+        <p id="auth-copy">Recruiter features require an account. Demo users can register locally.</p>
+      </div>
+      <form id="auth-form" class="auth-form">
+        <input id="auth-name" type="text" placeholder="Name" />
+        <input id="auth-email" type="email" placeholder="Email" required />
+        <input id="auth-password" type="password" placeholder="Password" required />
+        <select id="auth-role" title="Role">
+          <option value="recruiter">Recruiter</option>
+          <option value="student">Student</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button id="auth-submit" type="submit">Login</button>
+        <button id="auth-mode" class="secondary-button" type="button">Switch to Register</button>
       </form>
-      <div id="loading" class="hidden">⏳ Classifying...</div>
-      <div id="result" class="result"></div>
+      <div id="session-card" class="session-card hidden">
+        <strong id="session-user">Signed in</strong>
+        <span id="session-role"></span>
+        <button id="logout-btn" class="secondary-button" type="button">Logout</button>
+      </div>
     </section>
 
-    <section class="history">
-      <h2>📂 Classification History</h2>
+    <section class="primary-grid">
+    <aside class="panel upload-panel" data-role-view="recruiter student">
+      <div class="panel-title">
+        <span class="step-badge">1</span>
+        <div>
+          <h2>Analyze Candidate</h2>
+          <p>Start with a PDF resume and optional target skills.</p>
+        </div>
+      </div>
+      <form id="upload-form">
+        <label for="resume-file">Resume PDF</label>
+        <div id="drop-area" class="drop-area" tabindex="0" role="button" aria-label="Choose resume PDF">
+          <strong>Choose resume PDF</strong>
+          <span>Drag and drop, or click to browse</span>
+          <input type="file" id="resume-file" accept="application/pdf" multiple hidden />
+        </div>
+        <div id="file-preview" class="file-preview">No file selected</div>
 
-      <!-- 🔍 Search and Filter -->
-      <input type="text" id="search-input" placeholder="🔍 Search by filename" />
-      <label for="date-filter" class="visually-hidden">Filter by date</label>
-      <input type="date" id="date-filter" title="Filter by date" />
+        <label for="required-skills">Target skills</label>
+        <input id="required-skills" type="text" placeholder="Example: Python, SQL, React" />
 
-      <!-- 🔽 Sort dropdown -->
-      <select id="sort-select" title="Sort resumes">
-        <option value="date-desc">Sort by Date ↓</option>
-        <option value="date-asc">Sort by Date ↑</option>
-        <option value="name-asc">Sort by Name A-Z</option>
-        <option value="name-desc">Sort by Name Z-A</option>
-      </select>
+        <button id="classify-btn" type="submit" disabled>Run Analysis</button>
+        <p class="helper-text">Select one resume for normal analysis, or multiple PDFs for recruiter batch upload.</p>
+      </form>
 
-      <!-- ⬇ Export + 🧹 Clear -->
-      <button id="export-btn">⬇ Export CSV</button>
-      <button id="clear-btn">🧹 Clear History</button>
+      <form id="job-form" class="job-form">
+        <div class="panel-title compact">
+          <span class="step-badge muted-badge">2</span>
+          <div>
+            <h3>Use a Job Description</h3>
+            <p>Paste a role to auto-fill target skills.</p>
+          </div>
+        </div>
+        <input id="job-title" type="text" placeholder="Role title, e.g. Junior Developer" />
+        <textarea id="job-description" rows="5" placeholder="Paste job description here"></textarea>
+        <button type="submit" class="secondary-button">Extract Skills</button>
+      </form>
+    </aside>
 
-      <div id="grouped-resumes"></div>
+    <section class="workspace">
+      <section class="analysis-card" id="analysis-card">
+        <div class="empty-state">
+          <span class="empty-icon">AI</span>
+          <h2>Candidate analysis will appear here</h2>
+          <p>After upload, you will see role classification, confidence, candidate score, matched skills, skill gaps, and explanation.</p>
+        </div>
+      </section>
+    </section>
+    </section>
+
+    <section class="summary-grid" aria-label="Recruitment analytics summary">
+      <article class="metric"><span>Total Resumes</span><strong id="metric-total">0</strong></article>
+      <article class="metric"><span>Average Score</span><strong id="metric-score">0%</strong></article>
+      <article class="metric"><span>Shortlisted</span><strong id="metric-shortlist">0</strong></article>
+      <article class="metric"><span>Top Category</span><strong id="metric-category">-</strong></article>
+    </section>
+
+    <section class="table-panel" data-role-view="recruiter admin student">
+      <div class="section-head">
+        <div>
+          <h2>Candidate Pipeline</h2>
+          <p>Track analyzed resumes and shortlist decisions.</p>
+        </div>
+        <div class="table-controls">
+          <input id="search-input" type="search" placeholder="Search candidates" />
+          <select id="sort-select" title="Sort candidates">
+            <option value="date-desc">Newest first</option>
+            <option value="score-desc">Score high to low</option>
+            <option value="score-asc">Score low to high</option>
+            <option value="name-asc">Name A-Z</option>
+          </select>
+          <select id="status-filter" title="Filter by status">
+            <option value="">All statuses</option>
+            <option>Shortlist</option>
+            <option>Review</option>
+            <option>Hold</option>
+            <option>Needs More Information</option>
+            <option>Reject</option>
+          </select>
+          <a class="link-button" href="/api/reports/candidates.csv" data-role-view="recruiter admin">CSV Report</a>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Candidate</th>
+              <th>Category</th>
+              <th>Score</th>
+              <th>Status</th>
+              <th>Skills</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="candidate-table"></tbody>
+        </table>
+      </div>
+      <div class="pagination-bar">
+        <span id="page-summary">0 candidates</span>
+        <div>
+          <button id="prev-page" class="secondary-button" type="button">Previous</button>
+          <button id="next-page" class="secondary-button" type="button">Next</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="detail-panel panel" id="detail-panel" data-role-view="recruiter admin">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Candidate Detail</p>
+          <h2 id="detail-title">No candidate selected</h2>
+          <p>Open a candidate to review summary, status history, and recruiter notes.</p>
+        </div>
+      </div>
+      <div id="detail-content" class="detail-content muted">Select Detail from a candidate row.</div>
+      <form id="note-form" class="note-form hidden">
+        <textarea id="note-input" rows="3" placeholder="Add recruiter note"></textarea>
+        <button type="submit" class="secondary-button">Save Note</button>
+      </form>
+    </section>
+
+    <section class="guidance-panel panel" id="guidance-panel" data-role-view="student recruiter admin">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Student Assistant</p>
+          <h2>Career Guidance</h2>
+          <p>Open guidance from any candidate row to see skill gaps, roadmap, certifications, and learning resources.</p>
+        </div>
+      </div>
+      <div id="guidance-content" class="guidance-content muted">No guidance selected yet.</div>
+    </section>
+
+    <section class="analytics-panel" data-role-view="recruiter admin">
+      <div class="section-head">
+        <div>
+          <h2>Analytics</h2>
+          <p>Use these signals to understand role distribution and skill demand.</p>
+        </div>
+      </div>
+      <div class="chart-box panel"><canvas id="category-chart"></canvas></div>
+      <div class="chart-box panel"><canvas id="status-chart"></canvas></div>
+      <div class="chart-box panel"><canvas id="upload-chart"></canvas></div>
+      <div class="chart-box panel"><canvas id="score-chart"></canvas></div>
+      <section class="skill-list">
+        <h3>Top Skills</h3>
+        <div id="skill-frequency"></div>
+      </section>
+      <section class="job-list">
+        <h3>Saved Roles</h3>
+        <div id="job-list"></div>
+      </section>
     </section>
   </main>
 
-  <!-- ✅ Toast container for notifications -->
-  <div id="toast-container"></div>
-
-  <footer>
-    <p>Built with ❤️ using IBM watsonx.ai</p>
-  </footer>
-
+  <div id="toast-container" aria-live="polite"></div>
   <script src="app.js"></script>
 </body>
 </html>
-<script>
-  // Dark mode toggle
-  const darkToggle = document.getElementById('dark-toggle');
-  darkToggle.addEventListener('change', () => {
-    document.body.classList.toggle('dark-mode', darkToggle.checked);
-  });
-
-  // Drag & drop functionality
-  const dropArea = document.getElementById('drop-area');
-  const fileInput = document.getElementById('resume-file');
-
-  dropArea.addEventListener('click', () => fileInput.click());
-  dropArea.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropArea.classList.add('drag-over');
-  });
-  dropArea.addEventListener('dragleave', () => {
-    dropArea.classList.remove('drag-over');
-  });
-  dropArea.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropArea.classList.remove('drag-over');
-    if (e.dataTransfer.files.length) {
-      fileInput.files = e.dataTransfer.files;
-      updateFilePreview();
-    }
-  });
-
-  fileInput.addEventListener('change', updateFilePreview);
-
-  function updateFilePreview() {
-    const file = fileInput.files[0];
-    if (file && file.type === 'application/pdf') {
-      document.getElementById('file-preview').textContent = `Selected: ${file.name}`;
-      document.getElementById('classify-btn').disabled = false;
-    } else {
-      document.getElementById('file-preview').textContent = 'Please select a valid PDF file.';
-      document.getElementById('classify-btn').disabled = true;
-    }
-  }
