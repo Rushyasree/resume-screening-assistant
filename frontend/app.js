@@ -1,6 +1,9 @@
-﻿const API_BASE = window.location.origin.includes("localhost") || window.location.origin.includes("127.0.0.1")
-  ? window.location.origin
-  : "";
+﻿const configuredApiBase = window.APP_CONFIG?.API_BASE || "";
+const API_BASE = configuredApiBase || (
+  window.location.origin.includes("localhost") || window.location.origin.includes("127.0.0.1")
+    ? window.location.origin
+    : ""
+);
 
 const state = {
   resumes: [],
@@ -548,4 +551,5 @@ function renderRoleViews() {
 loadSession().catch(() => {
   document.getElementById("candidate-table").innerHTML = `<tr><td colspan="6" class="muted">Start the Flask backend to load saved candidates.</td></tr>`;
 });
+
 

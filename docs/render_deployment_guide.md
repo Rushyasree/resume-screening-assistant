@@ -41,6 +41,20 @@ Recommended screenshots for README:
 4. Student guidance panel.
 5. Analytics section with charts.
 
+## Vercel Frontend 404 Fix
+
+If deploying only the frontend on Vercel, keep `vercel.json` in the repository. It rewrites the repository root to `frontend/index.html`, which prevents Vercel's `404: NOT_FOUND` error.
+
+Set the backend URL in `frontend/config.js` after deploying the Flask API to Render:
+
+```js
+window.APP_CONFIG = {
+  API_BASE: "https://your-render-service.onrender.com"
+};
+```
+
+For full-stack Render deployment, use the Render URL directly instead of Vercel.
+
 ## Demo Video Script
 
 1. Register as recruiter.
